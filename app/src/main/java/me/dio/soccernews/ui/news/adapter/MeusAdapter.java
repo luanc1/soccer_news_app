@@ -1,10 +1,14 @@
 package me.dio.soccernews.ui.news.adapter;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -33,6 +37,14 @@ public class MeusAdapter extends RecyclerView.Adapter<MeusAdapter.ViewHolder>{
           News  news = this.news.get(position);
           holder.binding.tvTitle.setText(news.getTitle());
           holder.binding.tvDescription.setText(news.getDescritption());
+          holder.binding.btOpenLink.setOnClickListener(view ->{
+              Intent i = new Intent(Intent.ACTION_VIEW);
+              i.setData(Uri.parse(news.getLink()));
+              holder.itemView.getContext().startActivity(i);
+          });
+          Picasso.get().load(news.getImage())
+                  .fit()
+                  .into(holder.binding.ivThumbnail);
     }
 
     @Override
