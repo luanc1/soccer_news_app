@@ -1,8 +1,10 @@
 package me.dio.soccernews.ui.news.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,15 +14,19 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import me.dio.soccernews.R;
 import me.dio.soccernews.databinding.NewsItemBinding;
 import me.dio.soccernews.diman.News;
 
 public class MeusAdapter extends RecyclerView.Adapter<MeusAdapter.ViewHolder>{
 
     private List<News> news;
+    private  final NewsListener favoritesListener;
 //Pega  a lista de noticias
-    public  MeusAdapter(List<News> news){
+    public  MeusAdapter(List<News> news, NewsListener favoritesListener){
+
         this.news = news;
+        this.favoritesListener = favoritesListener;
     }
 
 
@@ -34,15 +40,39 @@ public class MeusAdapter extends RecyclerView.Adapter<MeusAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-          News  news = this.news.get(position);
-          holder.binding.tvTitle.setText(news.getTitle());
-          holder.binding.tvDescription.setText(news.getDescritption());
-          holder.binding.btOpenLink.setOnClickListener(view ->{
+        Context context = holder.itemView.getContext();
+        News  news = this.news.get(position);
+          holder.binding.tvTitle.setText(news.title);
+          holder.binding.tvDescription.setText(news.descritption);
+
+        holder.binding.btOpenLink.setOnClickListener(view ->{
               Intent i = new Intent(Intent.ACTION_VIEW);
-              i.setData(Uri.parse(news.getLink()));
-              holder.itemView.getContext().startActivity(i);
+              i.setData(Uri.parse(news.link));
+              context.startActivity(i);
           });
-          Picasso.get().load(news.getImage())
+          //implementando a funcionalidade do compartilhamento
+        holder.binding.ivShare.setOnClickListener(view ->{
+            //Share text:
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_SUBJECT, news.title);
+            i.putExtra(Intent.EXTRA_TEXT,news.link);
+            context.startActivity(Intent.createChooser(i, "Share via"));
+        });
+        //implementando o botão favoritos
+        holder.binding.ivFavorite.setOnClickListener(view ->{
+            news.favorites = !news.favorites;
+            this.favoritesListener.onFavorites(news);
+            notifyItemChanged(position);
+        });
+         if(news.favorites){
+             holder.binding.ivFavorite.setColorFilter(context.getResources().getColor(R.color.favorite));
+         }else{
+             holder.binding.ivFavorite.setColorFilter(context.getResources().getColor(R.color.inative));
+         }
+
+
+          Picasso.get().load(news.image)
                   .fit()
                   .into(holder.binding.ivThumbnail);
     }
@@ -63,5 +93,8 @@ public class MeusAdapter extends RecyclerView.Adapter<MeusAdapter.ViewHolder>{
         }
 
 
+    }
+    public interface NewsListener {
+       void onFavorites(News news);
     }
 }

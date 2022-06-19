@@ -1,16 +1,31 @@
 package me.dio.soccernews.diman;
 
-public class News {
-    private String title;
-    private String descritption;
-    private String image;
-    private String link;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-    public News(String title, String descritption, String image, String link) {
+@Entity
+public class News {
+    @PrimaryKey
+    public int id;
+    public String title;
+    public String descritption;
+    public String image;
+    public String link;
+    public boolean favorites;
+
+
+   /* public News(String title, String descritption, String image, String link) {
         this.title = title;
         this.descritption = descritption;
         this.image = image;
         this.link =  link;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -43,5 +58,5 @@ public class News {
 
     public void setLink(String link) {
         this.link = link;
-    }
+    }*/
 }
