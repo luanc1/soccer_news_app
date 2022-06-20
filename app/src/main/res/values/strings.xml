@@ -3,5 +3,6 @@
     <string name="title_news">News</string>
     <string name="title_favorites">Favorites</string>
     <string name="txt_open_link">open link</string>
+    <string name="error_network" />
 
 </resources>

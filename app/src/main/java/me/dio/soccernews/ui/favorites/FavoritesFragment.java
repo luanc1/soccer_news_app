@@ -22,37 +22,26 @@ import me.dio.soccernews.ui.news.adapter.MeusAdapter;
 public class FavoritesFragment extends Fragment {
 
     private FragmentFavoritesBinding binding;
+    private FavoritesViewModel favoritesViewModel;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        FavoritesViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(FavoritesViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        favoritesViewModel = new ViewModelProvider(this).get(FavoritesViewModel.class);
 
         binding = FragmentFavoritesBinding.inflate(inflater, container, false);
-       // View root = binding.getRoot();
 
-        loadfindFavoritesNews();
+        loadFavoriteNews();
 
-        // final TextView textView = binding.textFavorites;
-        //dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return binding.getRoot();
     }
 
-    private void loadfindFavoritesNews() {
-        MainActivity activity = (MainActivity) getActivity();
-
-        if (activity != null) {
-            List<News>  favoriteNews = activity.getDb().newsDao().loadFavoriteNews();
+    private void loadFavoriteNews() {
+        favoritesViewModel.loadFavoriteNews().observe(getViewLifecycleOwner(), localNews -> {
             binding.rvnews.setLayoutManager(new LinearLayoutManager(getContext()));
-            binding.rvnews.setAdapter(new MeusAdapter(favoriteNews, updatedNews ->{
-                activity.getDb().newsDao().save(updatedNews);
-                loadfindFavoritesNews();
-
+            binding.rvnews.setAdapter(new MeusAdapter(localNews, updatedNews -> {
+                favoritesViewModel.saveNews(updatedNews);
+                loadFavoriteNews();
             }));
-            }
-
-
-
+        });
     }
 
     @Override

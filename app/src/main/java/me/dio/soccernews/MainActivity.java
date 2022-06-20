@@ -17,7 +17,7 @@ import me.dio.soccernews.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private AppDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +35,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navViews, navController);
 
-         this.setupDb();
-    }
-    private void setupDb(){
 
-        db = Room.databaseBuilder(this, AppDatabase.class, "database-name")
-                .allowMainThreadQueries()
-                .build();
-
-    }    public AppDatabase getDb(){
-        return db;
     }
 
 }

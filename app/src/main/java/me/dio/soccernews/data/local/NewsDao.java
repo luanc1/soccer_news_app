@@ -18,7 +18,6 @@ public interface NewsDao {
     void save(News news);
 
     @Query("SELECT * FROM news WHERE favorites = 1")
-    List<News> loadFavoriteNews();
-
+    LiveData<List<News>> loadFavoriteNews();
 
 }
